@@ -1,6 +1,5 @@
 <?php
 //URL: http://127.0.0.1/paypal/retorno.php
-
 if ( isset( $_GET[ 'token' ] ) ) {
 	$token = $_GET[ 'token' ];
 
