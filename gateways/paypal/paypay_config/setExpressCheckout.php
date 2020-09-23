@@ -9,9 +9,9 @@ $sandbox = true;
 //e URLs da API.
 if ($sandbox) {
     //credenciais da API para o Sandbox
-    $user = 'conta-business_api1.test.com';
-    $pswd = '1365001380';
-    $signature = 'AiPC9BjkCyDFQXbSkoZcgqH3hpacA-p.YLGfQjc0EobtODs.fMJNajCx';
+    $user = 'sb-amg8d3275833@business.example.com';
+    $pswd = 'AXiT8qLGS3rEdbCKH2QOAGpZ7C6dISX38k-yJk9SbSCedRxfS_ZD4tjAkkaDGDCHOj1UR88wlEnTJaAE';
+    $signature = 'EPFGh-jqLw4oHi6YXbTVufuZSj8SkLp6p5FJdNacOEWNWhQiakodO3ikUFdHzU8Kvn1XjmOgUC8T_HJ2';
  
     //URL da PayPal para redirecionamento, não deve ser modificada
     $paypalURL = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
