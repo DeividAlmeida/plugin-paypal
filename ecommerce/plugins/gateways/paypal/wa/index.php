@@ -1,4 +1,6 @@
 <?php
+    
+
 //Incluindo o arquivo que contém a função sendNvpRequest
 require_once('request.php');
  
@@ -24,41 +26,51 @@ if ($sandbox) {
     //URL da PayPal para redirecionamento, não deve ser modificada
     $paypalURL = 'https://www.paypal.com/cgi-bin/webscr';
 }
- 
 //Campos da requisição da operação SetExpressCheckout, como ilustrado acima.
-$requestNvp = array(
-    'USER' => $user,
-    'PWD' => $pswd,
-    'SIGNATURE' => $signature,
- 
-    'VERSION' => '108.0',
-    'METHOD'=> 'SetExpressCheckout',
- 
-    'PAYMENTREQUEST_0_PAYMENTACTION' => 'SALE',
-    'PAYMENTREQUEST_0_AMT' => '22.00',
-    'PAYMENTREQUEST_0_CURRENCYCODE' => 'BRL',
-    'PAYMENTREQUEST_0_ITEMAMT' => '22.00',
-    'PAYMENTREQUEST_0_INVNUM' => '1234',
- 
-    'L_PAYMENTREQUEST_0_NAME0' => 'Item A',
-    'L_PAYMENTREQUEST_0_DESC0' => 'Produto A – 110V',
-    'L_PAYMENTREQUEST_0_AMT0' => '11.00',
-    'L_PAYMENTREQUEST_0_QTY0' => '1',
-    'L_PAYMENTREQUEST_0_ITEMAMT' => '11.00',
+ foreach($read as $r){
+        $pdt = json_decode($r['produto'], true);
+        foreach($pdt as $keyf => $fds){
+            
+            $a = $fds['produto_pg'];
+            $b = $fds['qtd'];
+            $c = $fds['un_valor'];
+            $d += $fds['un_valor'];
 
-    'L_PAYMENTREQUEST_0_NAME1' => 'Item B',
-    'L_PAYMENTREQUEST_0_DESC1' => 'Produto B – 220V',
-    'L_PAYMENTREQUEST_0_AMT1' => '11.00',
-    'L_PAYMENTREQUEST_0_QTY1' => '1',
- 
-    'RETURNURL' => 'http://PayPalPartner.com.br/VendeFrete?return=1',
-    'CANCELURL' => 'http://PayPalPartner.com.br/CancelaFrete',
-    'BUTTONSOURCE' => 'BR_EC_EMPRESA'
+
+$responseNvp = array(
+
+            'USER' => $user,
+            'PWD' => $pswd,
+            'SIGNATURE' => $signature,
+         
+            'VERSION' => '108.0',
+            'METHOD'=> 'SetExpressCheckout',
+         
+            'PAYMENTREQUEST_0_PAYMENTACTION' => 'SALE',
+            'PAYMENTREQUEST_0_AMT' => post('valor'),
+            'PAYMENTREQUEST_0_CURRENCYCODE' => 'BRL',
+            'PAYMENTREQUEST_0_ITEMAMT' => $d,
+            'PAYMENTREQUEST_0_INVNUM' => '1234',
+            'PAYMENTREQUEST_0_SHIPPINGAMT' => post('vl_frete'),
+         
+            'L_PAYMENTREQUEST_0_NAME'.$keyf => $a,
+            'L_PAYMENTREQUEST_0_DESC'.$keyf => '',
+            'L_PAYMENTREQUEST_0_AMT'.$keyf => $c,
+            'L_PAYMENTREQUEST_0_QTY'.$keyf => $b,
+            
+         
+            'RETURNURL' => 'http://PayPalPartner.com.br/VendeFrete?return=1',
+            'CANCELURL' => 'http://PayPalPartner.com.br/CancelaFrete',
+            'BUTTONSOURCE' => 'BR_EC_EMPRESA'
 );
- 
+            
+
+print_r($requestNvp);
+
 //Envia a requisição e obtém a resposta da PayPal
 $responseNvp = sendNvpRequest($requestNvp, $sandbox);
- 
+        }
+    }
 //Se a operação tiver sido bem sucedida, redirecionamos o cliente para o
 //ambiente de pagamento.
 if (isset($responseNvp['ACK']) && $responseNvp['ACK'] == 'Success') {
