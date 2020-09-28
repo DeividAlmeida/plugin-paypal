@@ -27,17 +27,30 @@ if ($sandbox) {
     $paypalURL = 'https://www.paypal.com/cgi-bin/webscr';
 }
 //Campos da requisição da operação SetExpressCheckout, como ilustrado acima.
- foreach($read as $r){
+
+          foreach($read as  $r){
         $pdt = json_decode($r['produto'], true);
         foreach($pdt as $keyf => $fds){
             
             $a = $fds['produto_pg'];
             $b = $fds['qtd'];
             $c = $fds['un_valor'];
-            $d += $fds['un_valor'];
+            $f += $fds['qtd'];
+            $d += $fds['un_valor']; 
+            
+       $_SESSION[$keyf] = [  
+            'L_PAYMENTREQUEST_0_NAME'.$keyf => $a,
+            'L_PAYMENTREQUEST_0_DESC'.$keyf => '',
+            'L_PAYMENTREQUEST_0_AMT'.$keyf => $c,
+            'L_PAYMENTREQUEST_0_QTY'.$keyf => $b,
+            ];
 
+            
+        }
+    } 
 
-$responseNvp = array(
+     
+$requestNvp = array(
 
             'USER' => $user,
             'PWD' => $pswd,
@@ -47,30 +60,30 @@ $responseNvp = array(
             'METHOD'=> 'SetExpressCheckout',
          
             'PAYMENTREQUEST_0_PAYMENTACTION' => 'SALE',
-            'PAYMENTREQUEST_0_AMT' => post('valor'),
+            'PAYMENTREQUEST_0_AMT' => number_format(post('valor'), 2),
             'PAYMENTREQUEST_0_CURRENCYCODE' => 'BRL',
-            'PAYMENTREQUEST_0_ITEMAMT' => $d,
+            'PAYMENTREQUEST_0_ITEMAMT' => post('valor') - post('vl_frete'),
             'PAYMENTREQUEST_0_INVNUM' => '1234',
             'PAYMENTREQUEST_0_SHIPPINGAMT' => post('vl_frete'),
-         
-            'L_PAYMENTREQUEST_0_NAME'.$keyf => $a,
-            'L_PAYMENTREQUEST_0_DESC'.$keyf => '',
-            'L_PAYMENTREQUEST_0_AMT'.$keyf => $c,
-            'L_PAYMENTREQUEST_0_QTY'.$keyf => $b,
-            
-         
+
             'RETURNURL' => 'http://PayPalPartner.com.br/VendeFrete?return=1',
             'CANCELURL' => 'http://PayPalPartner.com.br/CancelaFrete',
             'BUTTONSOURCE' => 'BR_EC_EMPRESA'
 );
             
+      
+unset($_SESSION['car']);
 
-print_r($requestNvp);
+  foreach($_SESSION as $key => $fd){
+    $requestNvp =  array_merge($_SESSION[$key], $requestNvp);
+  }; 
+
+
+print_r($responseNvp);
 
 //Envia a requisição e obtém a resposta da PayPal
 $responseNvp = sendNvpRequest($requestNvp, $sandbox);
-        }
-    }
+
 //Se a operação tiver sido bem sucedida, redirecionamos o cliente para o
 //ambiente de pagamento.
 if (isset($responseNvp['ACK']) && $responseNvp['ACK'] == 'Success') {
