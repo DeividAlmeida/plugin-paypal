@@ -1,6 +1,5 @@
 <?php
-    
-
+$reads =  DBRead('ecommerce_paypal','*', "WHERE id = '1'")[0];
 //Incluindo o arquivo que contém a função sendNvpRequest
 require_once('request.php');
  
@@ -11,17 +10,17 @@ $sandbox = true;
 //e URLs da API.
 if ($sandbox) {
     //credenciais da API para o Sandbox
-    $user = 'paypal_api1.tapiocacorp.com';
-    $pswd = 'RM2563V97DB853B2';
-    $signature = 'AFcWxV21C7fd0v3bYYYRCpSSRl31AyIQDAysZVi3HnR9JoqEZEjhx1rf';
+    $user = $reads['usuario'];
+    $pswd = $reads['senha'];
+    $signature = $reads['token'];
  
     //URL da PayPal para redirecionamento, não deve ser modificada
     $paypalURL = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 } else {
     //credenciais da API para produção
-    $user = 'paypal_api1.tapiocacorp.com';
-    $pswd = 'RM2563V97DB853B2';
-    $signature = 'AFcWxV21C7fd0v3bYYYRCpSSRl31AyIQDAysZVi3HnR9JoqEZEjhx1rf';
+    $user = $reads['usuario'];
+    $pswd = $reads['senha'];
+    $signature = $reads['token'];
  
     //URL da PayPal para redirecionamento, não deve ser modificada
     $paypalURL = 'https://www.paypal.com/cgi-bin/webscr';
@@ -61,14 +60,13 @@ $requestNvp = array(
          
             'PAYMENTREQUEST_0_PAYMENTACTION' => 'SALE',
             'PAYMENTREQUEST_0_AMT' => number_format(post('valor'), 2),
-            'PAYMENTREQUEST_0_CURRENCYCODE' => 'BRL',
+            'PAYMENTREQUEST_0_CURRENCYCODE' => $reads['moeda'],
             'PAYMENTREQUEST_0_ITEMAMT' => post('valor') - post('vl_frete'),
             'PAYMENTREQUEST_0_INVNUM' => '1234',
             'PAYMENTREQUEST_0_SHIPPINGAMT' => post('vl_frete'),
+            'RETURNURL' => 'https://'.$reads['moeda'],
+            'CANCELURL' => 'https://'.$reads['moeda']
 
-            'RETURNURL' => 'http://PayPalPartner.com.br/VendeFrete?return=1',
-            'CANCELURL' => 'http://PayPalPartner.com.br/CancelaFrete',
-            'BUTTONSOURCE' => 'BR_EC_EMPRESA'
 );
             
       
@@ -79,7 +77,7 @@ unset($_SESSION['car']);
   }; 
 
 
-print_r($responseNvp);
+
 
 //Envia a requisição e obtém a resposta da PayPal
 $responseNvp = sendNvpRequest($requestNvp, $sandbox);

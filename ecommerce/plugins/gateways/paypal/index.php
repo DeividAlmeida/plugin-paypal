@@ -47,13 +47,13 @@ $paypal = DBRead('ecommerce_plugins','*', "WHERE nome = 'paypal'")[0];
 
         <div class="col-md-4">
             <div class="form-group">
-                <label for="link_retorno">Link de Pagamento Efetuado:</label>
+                <label for="link_retorno">Link de Pagamento Efetuado:<i class="icon icon-question-circle tooltips" data-tooltip="Não coloque o protocolo http ou https"><span class="inner">Não coloque o protocolo http ou https</span></i></label>
                 <input type="text" name="link_retorno" id="link_retorno" class="form-control" placeholder="Coloque o link de redirecionamento" value="<?php echo $read['link_retorno']; ?>">
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="link_cancelado">Link de Pagamento Cancelado:</label>
+                <label for="link_cancelado">Link de Pagamento Cancelado:<i class="icon icon-question-circle tooltips" data-tooltip="Não coloque o protocolo http ou https"><span class="inner">Não coloque o protocolo http ou https</span></i></label>
                 <input type="text" name="link_cancelado" id="link_cancelado" class="form-control" placeholder="Coloque o link de redirecionamento" value="<?php echo $read['link_cancelado']; ?>">
             </div>
         </div>
@@ -61,6 +61,8 @@ $paypal = DBRead('ecommerce_plugins','*', "WHERE nome = 'paypal'")[0];
 </div>
 <script>
 function paypal(){
+
+    
     let m = new XMLHttpRequest();
     let a = document.getElementById('usuario').value;
     let b = document.getElementById('senha').value;
@@ -68,7 +70,7 @@ function paypal(){
     let d = document.getElementById('moeda').value;
     let e = document.getElementById('link_retorno').value;
     let f = document.getElementById('link_cancelado').value;
-    m.open("GET", "<?php echo ConfigPainel('base_url').$paypal['path'] ?>/controller/?paypal&usuario="+a+"&senha="+b+"&token="+c+"&moeda="+d+"&link_retorno="+e+"&link_cancelado="+f);
+    m.open("GET", "?paypal&usuario="+a+"&senha="+b+"&token="+c+"&moeda="+d+"&link_retorno="+e+"&link_cancelado="+f);
     m.send();
     m.onload = () => {swal("Informações de pagamento Atualizadas!", "Informações de pagamento atualizadas com sucesso!", "success");}
 }
