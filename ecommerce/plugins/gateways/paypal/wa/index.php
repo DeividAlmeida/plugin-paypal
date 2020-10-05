@@ -4,7 +4,7 @@ $reads =  DBRead('ecommerce_paypal','*', "WHERE id = '1'")[0];
 require_once('request.php');
  
 //Vai usar o Sandbox, ou produção?
-$sandbox = true;
+$sandbox = false;
  
 //Baseado no ambiente, sandbox ou produção, definimos as credenciais
 //e URLs da API.
