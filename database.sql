@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS `ecommerce_paypal` (
 
 INSERT INTO `ecommerce_paypal` (`id`, `usuario`, `senha`, `token`, `moeda`, `link_retorno`, `link_cancelado`) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
-INSERT INTO `ecommerce_plugins` (`id`, `titulo`, `nome`, `tipo`, `path`, `img`, `status`) VALUES (NULL, 'PayPal', 'paypal', 'gateways', 'ecommerce/plugins/gateways/paypal', 'ecommerce/plugins/gateways/paypal/wa/assets/img/paypal.jpg', '');
+INSERT INTO `ecommerce_plugins` (`id`, `titulo`, `nome`, `tipo`, `path`, `img`, `status`) VALUES (1, 'PayPal', 'paypal', 'gateways', 'ecommerce/plugins/gateways/paypal', 'ecommerce/plugins/gateways/paypal/wa/assets/img/paypal.jpg', '');

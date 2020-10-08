@@ -27,26 +27,7 @@ if ($sandbox) {
 }
 //Campos da requisição da operação SetExpressCheckout, como ilustrado acima.
 
-          foreach($read as  $r){
-        $pdt = json_decode($r['produto'], true);
-        foreach($pdt as $keyf => $fds){
-            
-            $a = $fds['produto_pg'];
-            $b = $fds['qtd'];
-            $c = $fds['un_valor'];
-            $f += $fds['qtd'];
-            $d += $fds['un_valor']; 
-            
-       $_SESSION[$keyf] = [  
-            'L_PAYMENTREQUEST_0_NAME'.$keyf => $a,
-            'L_PAYMENTREQUEST_0_DESC'.$keyf => '',
-            'L_PAYMENTREQUEST_0_AMT'.$keyf => $c,
-            'L_PAYMENTREQUEST_0_QTY'.$keyf => $b,
-            ];
 
-            
-        }
-    } 
 
      
 $requestNvp = array(
@@ -59,25 +40,40 @@ $requestNvp = array(
             'METHOD'=> 'SetExpressCheckout',
          
             'PAYMENTREQUEST_0_PAYMENTACTION' => 'SALE',
-            'PAYMENTREQUEST_0_AMT' => number_format(post('valor'), 2),
+            'PAYMENTREQUEST_0_AMT' => strval(post('valor')),
             'PAYMENTREQUEST_0_CURRENCYCODE' => $reads['moeda'],
-            'PAYMENTREQUEST_0_ITEMAMT' => post('valor') - post('vl_frete'),
-            'PAYMENTREQUEST_0_INVNUM' => '1234',
-            'PAYMENTREQUEST_0_SHIPPINGAMT' => post('vl_frete'),
-            'RETURNURL' => 'https://'.$reads['moeda'],
-            'CANCELURL' => 'https://'.$reads['moeda']
+            'PAYMENTREQUEST_0_ITEMAMT' => strval(post('valor') - post('vl_frete')),
+            'PAYMENTREQUEST_0_SHIPPINGAMT' => strval(post('vl_frete')),
+            'RETURNURL' => 'https://'.$reads['link_retorno'],
+            'CANCELURL' => 'https://'.$reads['link_cancelado'],
+            'PAYMENTREQUEST_0_INVNUM' => strval($read['id'])
 
 );
             
-      
-unset($_SESSION['car']);
+ 
+           foreach($read as  $r){
+        $pdt = json_decode($r['produto'], true);
+        foreach($pdt as $keyf => $fds){
+            
+            $a = $fds['produto_pg'];
+            $b = $fds['qtd'];
+            $c = strval($fds['un_valor']);
 
-  foreach($_SESSION as $key => $fd){
-    $requestNvp =  array_merge($_SESSION[$key], $requestNvp);
-  }; 
+       $_SESSION[$keyf] = [  
+            'L_PAYMENTREQUEST_0_NAME'.$keyf => $a,
+            'L_PAYMENTREQUEST_0_DESC'.$keyf => '',
+            'L_PAYMENTREQUEST_0_AMT'.$keyf => $c,
+            'L_PAYMENTREQUEST_0_QTY'.$keyf => $b,
+            ];
+
+            $requestNvp =  array_merge($_SESSION[$keyf], $requestNvp);
+        }
+    }      
+
+   
 
 
-
+#var_dump($requestNvp);
 
 //Envia a requisição e obtém a resposta da PayPal
 $responseNvp = sendNvpRequest($requestNvp, $sandbox);
