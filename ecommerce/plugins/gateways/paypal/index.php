@@ -1,4 +1,5 @@
-<?php header('Access-Control-Allow-Origin: *');
+<?php 
+header('Access-Control-Allow-Origin: *');
 require_once('../../../../includes/funcoes.php');
 require_once('../../../../database/config.database.php');
 require_once('../../../../database/config.php');
@@ -58,6 +59,9 @@ $paypal = DBRead('ecommerce_plugins','*', "WHERE nome = 'paypal'")[0];
             </div>
         </div>
     </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="submit" onclick="paypal()"><i class="icon icon-floppy-o" ></i>Salvar Mudanças</button> 
 </div>
 <script>
 function paypal(){
